@@ -38,9 +38,9 @@ namespace Nethermind.Blockchain.Synchronization
         
         void ReportNoSyncProgress(PeerInfo peerInfo);
         
-        void ReportInvalid(SyncPeerAllocation allocation);
+        void ReportInvalid(SyncPeerAllocation allocation, string details);
         
-        void ReportInvalid(PeerInfo peerInfo);
+        void ReportInvalid(PeerInfo peerInfo, string details);
         
         IEnumerable<PeerInfo> AllPeers { get; }
         

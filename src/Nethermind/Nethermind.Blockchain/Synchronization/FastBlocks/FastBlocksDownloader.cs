@@ -87,7 +87,7 @@ namespace Nethermind.Blockchain.Synchronization.FastBlocks
                                     }
                                     else
                                     {
-                                        _syncPeerPool.ReportInvalid(batch.Allocation);
+                                        _syncPeerPool.ReportInvalid(batch.Allocation, $"headers -> {t.Exception}");
                                     }
                                 }
                             );
@@ -112,7 +112,7 @@ namespace Nethermind.Blockchain.Synchronization.FastBlocks
                                     }
                                     else
                                     {
-                                        _syncPeerPool.ReportInvalid(batch.Allocation);
+                                        _syncPeerPool.ReportInvalid(batch.Allocation, $"bodies -> {t.Exception}");
                                     }
                                 }
                             );
@@ -137,7 +137,7 @@ namespace Nethermind.Blockchain.Synchronization.FastBlocks
                                     }
                                     else
                                     {
-                                        _syncPeerPool.ReportInvalid(batch.Allocation);
+                                        _syncPeerPool.ReportInvalid(batch.Allocation, $"receipts -> {t.Exception}");
                                     }
                                 }
                             );
@@ -210,10 +210,17 @@ namespace Nethermind.Blockchain.Synchronization.FastBlocks
 
                     bool isHashValid = _blockValidator.ValidateHash(header);
                     bool isSealValid = _sealValidator.ValidateSeal(header);
-                    if (!(isHashValid && isSealValid))
+                    if (!isHashValid)
                     {
-                        if (_logger.IsTrace) _logger.Trace("One of the blocks is invalid");
-                        _syncPeerPool.ReportInvalid(batch.Allocation?.Current);
+                        if (_logger.IsTrace) _logger.Trace($"One of the blocks is invalid - invalid hash at {header.Number}");
+                        _syncPeerPool.ReportInvalid(batch.Allocation?.Current, $"invalid hash of block {header.Number}");
+                        batch.Headers.Response = null;
+                    }
+                    
+                    if (!isSealValid)
+                    {
+                        if (_logger.IsTrace) _logger.Trace($"One of the blocks is invalid - invalid seal at {header.ToString(BlockHeader.Format.Short)}");
+                        _syncPeerPool.ReportInvalid(batch.Allocation?.Current, $"invalid hash of block {header.ToString(BlockHeader.Format.Short)}");
                         batch.Headers.Response = null;
                     }
                 }
@@ -221,6 +228,7 @@ namespace Nethermind.Blockchain.Synchronization.FastBlocks
             catch (Exception ex)
             {
                 if (_logger.IsError) _logger.Error($"Error when validating headers of {batch}", ex);
+                _syncPeerPool.ReportInvalid(batch.Allocation?.Current, $"validation exception - {ex}");
                 batch.Headers.Response = null;
             }
         }

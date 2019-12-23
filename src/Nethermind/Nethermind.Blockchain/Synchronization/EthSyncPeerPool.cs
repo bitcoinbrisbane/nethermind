@@ -68,17 +68,17 @@ namespace Nethermind.Blockchain.Synchronization
             peerInfo.SleepingSince = DateTime.UtcNow;
         }
 
-        public void ReportInvalid(SyncPeerAllocation allocation)
+        public void ReportInvalid(SyncPeerAllocation allocation, string details)
         {
-            ReportInvalid(allocation?.Current);
+            ReportInvalid(allocation?.Current, details);
         }
 
-        public void ReportInvalid(PeerInfo peerInfo)
+        public void ReportInvalid(PeerInfo peerInfo, string details)
         {
             if (peerInfo != null)
             {
                 _stats.ReportSyncEvent(peerInfo.SyncPeer.Node, NodeStatsEventType.SyncFailed);
-                peerInfo.SyncPeer.Disconnect(DisconnectReason.BreachOfProtocol, "SYNC BREACH");
+                peerInfo.SyncPeer.Disconnect(DisconnectReason.BreachOfProtocol, details);
             }
         }
 
@@ -362,7 +362,7 @@ namespace Nethermind.Blockchain.Synchronization
                         {
                             if (_logger.IsDebug) _logger.Debug($"InitPeerInfo failed for node: {syncPeer.Node:c}{Environment.NewLine}{t.Exception}");
                             _stats.ReportSyncEvent(syncPeer.Node, peerInfo.IsInitialized ? NodeStatsEventType.SyncFailed : NodeStatsEventType.SyncInitFailed);
-                            syncPeer.Disconnect(DisconnectReason.DisconnectRequested, "refresh peer info fault");
+                            syncPeer.Disconnect(DisconnectReason.DisconnectRequested, "refresh peer info fault - timeout");
                         }
                         else if (firstToComplete.IsCanceled)
                         {
@@ -379,7 +379,7 @@ namespace Nethermind.Blockchain.Synchronization
                                 if (_logger.IsDebug) _logger.Debug($"InitPeerInfo failed for node: {syncPeer.Node:c}{Environment.NewLine}{t.Exception}");
 
                                 _stats.ReportSyncEvent(syncPeer.Node, peerInfo.IsInitialized ? NodeStatsEventType.SyncFailed : NodeStatsEventType.SyncInitFailed);
-                                syncPeer.Disconnect(DisconnectReason.DisconnectRequested, "refresh peer info fault");
+                                syncPeer.Disconnect(DisconnectReason.DisconnectRequested, "refresh peer info fault - null response");
                                 return;
                             }
 
