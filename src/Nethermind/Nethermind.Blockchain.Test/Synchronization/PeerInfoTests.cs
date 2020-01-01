@@ -14,16 +14,30 @@
 //  You should have received a copy of the GNU Lesser General Public License
 //  along with the Nethermind. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using Nethermind.Blockchain.Synchronization;
+using NSubstitute;
+using NUnit.Framework;
+
 namespace Nethermind.Blockchain.Test.Synchronization
 {
+    [TestFixture]
     public class PeerInfoTests
     {
+        [Test]
         public void Should_Report_Peers()
         {
             // * [Peer |178.128.117.242:30303| 9136207|  47 kbps|Parity]
             // * [Peer | 35.243.195.135:33302| 9136207| 133 kbps|Parity]
             // * [Peer |  52.196.62.203:30303| 9136204|  46 kbps|Geth]
             // * [Peer |   54.85.105.50:30303|       0|  10 kbps|Geth]
+            
+            ISyncPeer syncPeer = Substitute.For<ISyncPeer>();
+            PeerInfo peer = new PeerInfo(syncPeer);
+            peer.IsInitialized = false;
+
+            String actual = peer.ToString();
+            Assert.That(actual, Is.EqualTo("[Peer |178.128.117.242:30303| 9136207|  47 kbps|Parity]"));
         }
     }
 }
