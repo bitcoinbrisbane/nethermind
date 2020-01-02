@@ -16,6 +16,7 @@
 
 using System;
 using Nethermind.Blockchain.Synchronization;
+using Nethermind.Stats.Model;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -33,7 +34,10 @@ namespace Nethermind.Blockchain.Test.Synchronization
             // * [Peer |   54.85.105.50:30303|       0|  10 kbps|Geth]
             
             ISyncPeer syncPeer = Substitute.For<ISyncPeer>();
+            //syncPeer.Node = Substitute.For<Node>();
+            //syncPeer. = new Node(null, "178.128.117", 30303);
             PeerInfo peer = new PeerInfo(syncPeer);
+            peer.PeerClientType = PeerClientType.Parity;
             peer.IsInitialized = false;
 
             String actual = peer.ToString();

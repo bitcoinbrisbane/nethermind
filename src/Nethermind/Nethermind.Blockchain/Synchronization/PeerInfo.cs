@@ -71,10 +71,10 @@ namespace Nethermind.Blockchain.Synchronization
         public long HeadNumber { get; set; }
         public Keccak HeadHash { get; set; }
 
-        public override string ToString() => $"[Peer|{SyncPeer?.Node:s}|{HeadNumber}|{SyncPeer?.ClientId}]";
+        public override string ToString() => $"[Peer |{SyncPeer?.Node:s}|{HeadNumber}|{SyncPeer?.ClientId}]";
 
         public string ToString(string format) => ToString(format, null);
 
-        public string ToString(string format, IFormatProvider formatProvider) => $"[Peer|{SyncPeer?.Node.ToString(format)}|{HeadNumber}|{SyncPeer?.ClientId}]";
+        public string ToString(string format, IFormatProvider formatProvider) => $"[Peer |{SyncPeer?.Node.ToString(format)}|{HeadNumber}|{SyncPeer?.ClientId}]";
     }
 }

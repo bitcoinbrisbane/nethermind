@@ -129,6 +129,7 @@ namespace Nethermind.Stats.Model
                 case "s":
                     return $"{formattedHost}:{Port}";
                 case "c":
+                    //todo
                     return $"[Node|{formattedHost}:{Port}|{ClientId}]";
                 case "f":
                     return $"enode://{Id.ToString(false)}@{formattedHost}:{Port}|{ClientId}";    
